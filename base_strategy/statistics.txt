@@ -1,0 +1,22 @@
+Backtest period: 2010-01-01 → 2026-07-10 (16.5 years; 2026-07-10 is the latest available SPY minute data in simulation)
+Starting capital: $100,000
+Ending capital: $292,948.45
+Total return: +192.95%
+Annualized return (CAGR): 6.72%
+Annualized volatility: 9.2%
+Sharpe ratio: 0.34 (Sortino 0.32)
+Maximum drawdown: 28.0% (recovery took 853 days)
+Number of trades: 8,307 filled orders = 4,153 completed overnight round trips + 1 position still open at the end
+Win rate: 55.3% per overnight trade
+Average overnight return per trade: +0.0335% (3.35 bps, price-only from actual fills)
+Median overnight return per trade: +0.0586% (5.86 bps)
+Total transaction fees: $26,738.24 (~$6.44 per round trip, roughly 0.3-0.5 bps per trade)
+Per-trade t-stat on the mean overnight return is roughly 3 — the overnight edge is statistically significant in this window. Median > mean in every window tested: the typical overnight is positive with occasional large negative gap outliers.
+
+SPY buy-and-hold benchmark (same period)
+Total return: +793.0%, CAGR 14.17%
+The strategy underperforms buy-and-hold because it sits in cash during a strongly rising daytime session and pays commissions; its advantage is roughly half the volatility and smaller drawdowns.
+Overnight vs daytime decomposition (dividend-adjusted daily bars, gross)
+Overnight component (close t → open t+1): +313.3% cumulative, ~9.0% annualized — mean +3.42 bps per gap including dividends
+Daytime component (open t → close t): +118.0% cumulative, ~4.8% annualized
+Consistency check: overnight × daytime = +801% vs buy-and-hold +793% (<1% difference from adjustment rounding)
