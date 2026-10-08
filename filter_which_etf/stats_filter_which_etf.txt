@@ -1,0 +1,21 @@
+Done. Both filter variants ran over the same window as your baseline (2010-01-01 -> present, data through 2026-07-10, 4,153 round trips each, 8,307 orders). The strategy is your baseline mechanics unchanged: buy at the close, sell at the next open, 100% allocation. Each day at ~15:30 ET it refreshes 63-day average dollar volume and 21-day realized vol from one batch daily history request (window ends at the previous session, no look-ahead), keeps the top half of the 8-ETF universe by liquidity (DIA and EFA never passed), then trades the single ETF with the highest (variant 1) or lowest (variant 2) realized vol. One ETF per day keeps the run inside the order quota.
+
+Results, low-vol tilt (backtest 65db6297918a392778ffa30171019af9):
+
+Frictionless overnight curve: +155.6% cumulative, CAGR 5.84%, Sharpe 0.57, max drawdown 45.95%, win rate 54.15%
+Net of fees (results page): +87.8% net, CAGR 3.89%, Sharpe 0.128, max drawdown 31.9%, fees -$34,944
+Selections: SPY 3,093 days (+181.9% overnight cum), QQQ 248 (+20.5%), IWM 148 (+16.8%), GLD 97 (+5.9%), EEM 168 (-22.0%), TLT 399 (-22.1%)
+Results, high-vol tilt (backtest 46c07f7c29bdbe9e81f2c166b64298af):
+
+Frictionless: +64.6% cumulative, CAGR 3.06%, Sharpe 0.27, max drawdown 76.06%, win rate 52.66%
+Net of fees: -16.8% net, Sharpe -0.128, max drawdown 65.3%, fees -$47,685
+Selections: EEM dominated (1,570 days, -35.9% overnight cumulative) — EEM bleeds overnight post-2010, and it dragged everything down while IWM days (+96.8% over 1,356 trades) carried the gains
+Reference from the same runs (your baseline's decomposition, adjusted data): SPY overnight component +313.3%, intraday +118.0%, buy-and-hold +793.0% (14.2% CAGR).
+
+Takeaways:
+
+On ETFs, the volatility filter direction flips versus your constituent-level notebook finding: low-vol tilt wins decisively here, high-vol tilt loses, because "high-vol ETF" means EEM, and its overnight drift is negative.
+The low-vol variant is effectively SPY overnight 74% of the time, and it does not beat plain SPY overnight on a per-trade basis — the rotation adds nothing over your baseline except concentration risk.
+Fees are the dominant drag at 2 round trips/day ($35-48k on $100k start); the gap between the 0.57 frictionless Sharpe and 0.128 net Sharpe is almost entirely transaction costs.
+main.py currently holds the low-vol variant; flip the VOL_TILT class constant to "high" for the other run. Possible next steps: run the LIQ filter as a tradable SPY-constituent strategy (your notebook's best leg, Sharpe 0.893 frictionless), or test a cheaper execution variant (weekly overnight-only exposure or limit orders near the close) to cut the fee drag.
+
