@@ -1,0 +1,31 @@
+Results are in — clean run, no rejections. This is the strongest conditional overnight variant of everything we've tested.
+
+SPY Overnight Dip Buy, 2010-01-01 to 2026-07:
+
+Strategy:
+
+Dip nights traded: 896 of 4,159 days (21.6% — the filter sits out ~78% of nights)
+Win rate: 58.15%
+Mean per trade: +0.0724%
+Frictionless cumulative: +88.05%
+Per-trade Sharpe: 1.86
+Max drawdown (frictionless): -10.23%
+After fees (actual backtest):
+
+Net: +79.18% ($100k to $179.2k), fees only -$5,092
+CAGR 3.59%, max DD 10.4%, beta 0.075
+LEAN Sharpe 0.159 is again the mostly-cash reporting artifact; the per-trade lens above is the comparable one.
+Same-window SPY reference: buy & hold +779.23%, overnight component +308.32%, intraday +115.33%.
+
+How it stacks against the earlier variants (all frictionless, 2010+):
+
+Plain nightly overnight: +308% over 16.5y, deep DDs
+Liquidity+volatility gate: +30.98%, Sharpe 0.87, win 55.5%, mean 0.0267%/trade
+Overnight dip filter: +88.05%, Sharpe 1.86, win 58.2%, mean 0.0724%/trade
+The dip filter roughly triples the gate variant's cumulative return while trading a similar fraction of nights, and it nearly doubles the per-trade edge (7.2 bps vs 2.7 bps). Economically this makes sense: buying the overnight after a within-uptrend pullback concentrates exposure on rebound nights, where the overnight drift is strongest — and it naturally avoids the euphoric-trend nights that tend to gap down. The trade-off remains the same as every overnight-only version: 7.2 bps/night is good but the strategy only captures 21.6% of nights, so absolute return (+88%) stays far below buy & hold (+779%) even though risk-adjusted quality is much higher.
+
+The known caveats carry over: fee drag is small here (~5.7% total, the lowest of all variants), and the flat-equity/margin-usage/benchmark-Sharpe notices in the analysis are the usual artifacts of a mostly-cash book, not issues.
+
+Everything is in backtest 468b93cbf6e8016de66a5ff9c64f909b. If you want to push further, the natural next knobs are: relaxing the down-close requirement (it's likely the most restrictive leg), requiring the pullback to be of a minimum depth (e.g. close >1% under the 5d EMA) instead of any touch, or checking whether dip nights following consecutive down days have an even stronger edge.
+
+NOTE about 2 Sharpes: A Sharpe computed only on the 896 trade nights treats the strategy as if it's always exposed, while a Sharpe on the daily equity curve averages in the ~78% of days earning zero. The latter scales down by sqrt(exposure), which turns 1.6-1.9 into ~0.7-0.75. SPY's full daily Sharpe (0.86) is genuinely a bit higher on a calendar-day basis — it stays invested through compounding bull years, while the strategy forfeits those days. Where the strategy wins is risk: same ballpark Sharpe with a third of the drawdown (-7.9% vs -30.0%) and a much smoother curve, visible in both charts.

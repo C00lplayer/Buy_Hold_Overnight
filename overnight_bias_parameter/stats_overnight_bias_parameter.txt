@@ -1,0 +1,23 @@
+Up to 33% of equity lost in fees: Seg2 (2013-03-18→2016-01-04): net +6.97%, $106,966.13, fees $33,735.01, 3,312 orders. Gross end ≈ 106,966.13 + 33,735.01 = $140,701.14.
+
+Seg	Window	         Net	Orders
+1	2010–2011H1	−5.56%	4,758
+2	2013–2016	+6.97%	3,312
+3	2016–2017H1	−13.98%	1,250
+4	2017H2–2019	+1.77%	252
+5	2019–2020H1	+13.06%	1,246
+6	2020H2–2022H1	+49.28%	1,248
+7	2022–2023H1	−6.86%	1,242
+8	2023H2–2025H1	+10.10%	252
+9	2025–2026-07-10	+7.16%	998
+Stitched result: ~1.64x equity, roughly +64% cumulative over 2010–2026, CAGR ~3.1%.
+
+Headline conclusions:
+
+Segs 3–7 matched the original chain to the decimal (order-flow identical), so the XLV overnight-slide bleed and the COVID-window 32.3% DD are strategy-real — but the original's reported magnitude for the 2016 window was roughly double the true loss.
+Segs 8–9 upend the original tail: the original showed −12.29% and −10.35% for 2023H2–2025H1 and 2024H2–2025H1; the clean runs show +10.10% and +7.16% on identical order counts. Those original losses were margin artifacts, not strategy.
+Deep drawdowns are concentrated in seg5 (32.3%, COVID) and seg7 (16.5%, 2022 bear); the clean chain's actual downside is mild elsewhere (4–8% per mostly-cash and flat periods).
+All recurring platform notices (mostly-cash Sharpe, flat warm-up curve, low margin usage, benchmark-relative items) are the standard cash-heavy artifacts, consistent across all nine runs.
+
+The clean EQR chain is now the authoritative record for the OBP strategy. Possible next steps if you want them: rebuild a single continuous equity curve file from the nine segments, or analyze segment-level weights (e.g., relax the t>=2.0 gate to fill the flat years).
+
