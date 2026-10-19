@@ -29,3 +29,22 @@ The known caveats carry over: fee drag is small here (~5.7% total, the lowest of
 Everything is in backtest 468b93cbf6e8016de66a5ff9c64f909b. If you want to push further, the natural next knobs are: relaxing the down-close requirement (it's likely the most restrictive leg), requiring the pullback to be of a minimum depth (e.g. close >1% under the 5d EMA) instead of any touch, or checking whether dip nights following consecutive down days have an even stronger edge.
 
 NOTE about 2 Sharpes: A Sharpe computed only on the 896 trade nights treats the strategy as if it's always exposed, while a Sharpe on the daily equity curve averages in the ~78% of days earning zero. The latter scales down by sqrt(exposure), which turns 1.6-1.9 into ~0.7-0.75. SPY's full daily Sharpe (0.86) is genuinely a bit higher on a calendar-day basis — it stays invested through compounding bull years, while the strategy forfeits those days. Where the strategy wins is risk: same ballpark Sharpe with a third of the drawdown (-7.9% vs -30.0%) and a much smoother curve, visible in both charts.
+
+Good question — the three numbers measure the same edge over different sampling conventions:
+
+Engine Sharpe = 0.164 (QC statistics table)
+Computed on the end-of-day equity curve, one point per calendar day over the full 16.5-year window (6,050 points).
+The strategy only holds SPY on 900 of ~4,160 trading nights (22% exposure), so ~78% of daily observations are pure zero-or-tiny-cash-interest moves. All those zero days inflate the denominator (standard deviation collapses to 0.038 annualized) while the mean return is also diluted, and the annualization uses the full calendar-day count. Net effect: the reported 3.614% annual return against a tiny annualized vol gives 0.164. This number understates the risk-adjusted quality of the trades themselves — it's really a "part-time strategy" Sharpe.
+In-code daily Sharpe = 0.80
+Computed from my 15:59 ET equity snapshots: return from one decision-day snapshot to the next (n = 4,159 daily returns, trading days only, not calendar days).
+Includes everything: trade P&L on dip nights, zero days when flat, fees, and cash interest. It excludes weekends/holidays from the sample, and the snapshot timing (15:59, before entry) aligns the return measurement with the strategy's actual overnight exposure window.
+Annualized with sqrt(252) trading days: 0.0146% mean / 0.29% daily std x 15.87 ≈ 0.80. This is the most honest "what you lived through" number.
+Per-trade Sharpe = 1.87
+Computed only on the 897 nights when the strategy actually held SPY: the overnight return from entry fill (15:59) to exit fill (next open), frictionless.
+All non-trading days are dropped entirely. Annualization assumes the strategy were invested every trading day (sqrt(252)), which is a standard way to compare an intermittent strategy's edge to a fully-invested one — it answers "how good is each bet," not "how much money did the schedule make."
+How they relate
+
+All three describe the same underlying edge; they differ by which days are in the sample and what the annualization factor assumes.
+Rough consistency check: per-trade mean 0.0729% with ~21.6% of nights traded gives ~0.0157%/trading-day contribution, close to the observed 0.0146% daily mean (difference is fees and the interest on flat days). The per-trade Sharpe scales down to a daily equivalent of 1.87 x sqrt(0.216) ≈ 0.87, right in line with the measured 0.80.
+The engine's 0.164 is lower still mainly because it annualizes over calendar days (365-based, diluting by weekends) and marks at end-of-day rather than the 15:59/open window.
+If you want a single number for comparing to other strategies, the per-trade Sharpe (1.87, t ≈ 3.5) measures the edge quality; the in-code daily Sharpe (0.80) measures the realized risk-adjusted return of running it as specified.
